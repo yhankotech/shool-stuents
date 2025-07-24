@@ -8,7 +8,6 @@ import {
   GraduationCap,
   TrendingUp,
   Clock,
-  AlertTriangle,
   Calendar,
   MessageSquare,
   BookOpen,
@@ -22,7 +21,7 @@ interface DashboardProps {
 }
 
 export function Dashboard({ onPageChange }: DashboardProps) {
-  const { student, subjects, grades, events, payments, messages, notifications } = useStudent();
+  const { student, subjects, grades, events, payments, messages } = useStudent();
 
   const averageGrade = grades.reduce((acc, grade) => acc + grade.grade, 0) / grades.length;
   const upcomingEvents = events.filter(event => new Date(event.date) > new Date()).slice(0, 3);
@@ -219,7 +218,7 @@ export function Dashboard({ onPageChange }: DashboardProps) {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-orange-900">€{payment.amount}</p>
+                      <p className="font-semibold text-orange-900">KZ{payment.amount}</p>
                       <Badge variant="destructive" className="text-xs">
                         Pendente
                       </Badge>

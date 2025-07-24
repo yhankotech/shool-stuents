@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -15,7 +15,6 @@ import {
   Menu,
   X,
   TrendingUp,
-  FileText
 } from 'lucide-react';
 import { useStudent } from '@/contexts/StudentContext';
 
@@ -33,7 +32,6 @@ const menuItems = [
   { id: 'payments', label: 'Pagamentos', icon: CreditCard },
   { id: 'resources', label: 'Recursos', icon: BookOpen },
   { id: 'ai-tutor', label: 'IA Tutora', icon: Bot },
-  { id: 'documents', label: 'Documentos', icon: FileText },
   { id: 'notifications', label: 'Notificações', icon: Bell, hasNotification: true },
   { id: 'profile', label: 'Perfil', icon: User }
 ];
@@ -72,8 +70,8 @@ export function Sidebar({ currentPage, onPageChange }: SidebarProps) {
                     <GraduationCap className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h2 className="font-semibold text-gray-900">EduPortal</h2>
-                    <p className="text-xs text-gray-500">Sistema Escolar</p>
+                    <h2 className="font-semibold text-gray-900">Portal do Aluno</h2>
+                    
                   </div>
                 </div>
               )}
@@ -81,28 +79,12 @@ export function Sidebar({ currentPage, onPageChange }: SidebarProps) {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsCollapsed(!isCollapsed)}
-                className="hover:bg-gray-100"
+                className="bg-blue-600 text-white hover:bg-blue-500 hover:text-white"
               >
                 {isCollapsed ? <Menu className="w-4 h-4" /> : <X className="w-4 h-4" />}
               </Button>
             </div>
           </div>
-
-          {/* Student Info */}
-          {!isCollapsed && (
-            <div className="p-4 border-b border-gray-200">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold">
-                  {student.name.split(' ').map(n => n[0]).join('')}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="font-medium text-gray-900 truncate">{student.name}</p>
-                  <p className="text-sm text-gray-500">{student.class}</p>
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* Navigation */}
           <nav className="flex-1 p-2 space-y-1">
             {menuItems.map((item) => {
@@ -115,9 +97,9 @@ export function Sidebar({ currentPage, onPageChange }: SidebarProps) {
                   key={item.id}
                   variant={isActive ? "secondary" : "ghost"}
                   className={cn(
-                    "w-full justify-start relative",
+                    "w-full justify-start relative bg-white text-black border border-blue-600",
                     isCollapsed ? "px-2" : "px-3",
-                    isActive && "bg-blue-50 text-blue-700 hover:bg-blue-100"
+                    isActive && "bg-blue-600 text-white hover:bg-blue-700 flex justify-center"
                   )}
                   onClick={() => onPageChange(item.id)}
                 >

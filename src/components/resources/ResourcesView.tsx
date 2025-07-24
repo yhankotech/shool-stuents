@@ -268,19 +268,22 @@ export function ResourcesView() {
               </div>
               
               <div className="flex gap-2 pt-2">
-                <Button size="sm" className="flex-1">
-                  <Download className="w-4 h-4 mr-2" />
-                  Download
-                </Button>
-                {resource.type === 'video' || resource.type === 'link' || resource.type === 'game' ? (
-                  <Button variant="outline" size="sm">
-                    <Eye className="w-4 h-4 mr-2" />
-                    Ver
-                  </Button>
+                {resource.type === 'video' || resource.type === '' || resource.type === 'pdf' ? (
+                  <div className='flex gap-2 pt-2 w-screen'>
+                    <Button size="sm" className="flex-1 bg-blue-600 hover:bg-blue-700">
+                      <Download className="w-4 h-4 mr-2" />
+                      Download
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      <Eye className="w-4 h-4 mr-2" />
+                      Pré-visualizar
+                    </Button>
+                  </div>
+                  
                 ) : (
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" className='w-full'>
                     <Eye className="w-4 h-4 mr-2" />
-                    Pré-visualizar
+                    Acessar
                   </Button>
                 )}
               </div>

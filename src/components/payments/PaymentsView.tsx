@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useStudent } from '@/contexts/StudentContext';
-import { CreditCard, Download, Search, AlertTriangle, CheckCircle, Clock, Euro, Calendar, Receipt } from 'lucide-react';
+import { CreditCard, Download, Search, AlertTriangle, CheckCircle, Clock, Calendar, Receipt, Coins } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -15,6 +15,7 @@ export function PaymentsView() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
+  const [metodoPagamento, setMetodoPagamento] = useState('');
 
   const filteredPayments = payments.filter(payment => {
     const searchMatch = payment.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -71,7 +72,7 @@ export function PaymentsView() {
     }
   };
 
-  const selectedPaymentData = payments.find(p => p.id === selectedPayment);
+  payments.find(p => p.id === selectedPayment);
 
   return (
     <div className="space-y-6">
@@ -91,7 +92,7 @@ export function PaymentsView() {
             </div>
             <div>
               <p className="text-sm font-medium text-gray-600">Pendente</p>
-              <p className="text-2xl font-bold text-gray-900">€{totalPending.toFixed(2)}</p>
+              <p className="text-2xl font-bold text-gray-900">KZ{totalPending.toFixed(2)}</p>
             </div>
           </CardContent>
         </Card>
@@ -103,7 +104,7 @@ export function PaymentsView() {
             </div>
             <div>
               <p className="text-sm font-medium text-gray-600">Pago Este Ano</p>
-              <p className="text-2xl font-bold text-gray-900">€{totalPaid.toFixed(2)}</p>
+              <p className="text-2xl font-bold text-gray-900">KZ{totalPaid.toFixed(2)}</p>
             </div>
           </CardContent>
         </Card>
@@ -153,8 +154,8 @@ export function PaymentsView() {
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="font-bold text-red-900">€{payment.amount.toFixed(2)}</p>
-                        <Button size="sm" className="mt-1">
+                        <p className="font-bold text-red-900">KZ{payment.amount.toFixed(2)}</p>
+                        <Button size="sm" className="mt-1 bg-green-500 hover:bg-green-600">
                           Pagar Agora
                         </Button>
                       </div>
@@ -220,8 +221,8 @@ export function PaymentsView() {
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm text-gray-600">
                           <div className="flex items-center gap-2">
-                            <Euro className="w-4 h-4" />
-                            <span>€{payment.amount.toFixed(2)}</span>
+                            <Coins className="w-4 h-4" />
+                            <span>KZ{payment.amount.toFixed(2)}</span>
                           </div>
                           <div className="flex items-center gap-2">
                             <Calendar className="w-4 h-4" />
@@ -243,7 +244,7 @@ export function PaymentsView() {
                       {payment.status === 'pending' && (
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button size="sm" onClick={() => setSelectedPayment(payment.id)}>
+                            <Button size="sm" onClick={() => setSelectedPayment(payment.id)} className='bg-green-500 hover:bg-green-600'>
                               Pagar
                             </Button>
                           </DialogTrigger>
@@ -254,7 +255,7 @@ export function PaymentsView() {
                             <div className="space-y-4">
                               <div className="p-4 bg-gray-50 rounded-lg">
                                 <h4 className="font-medium mb-2">{payment.description}</h4>
-                                <p className="text-2xl font-bold text-blue-600">€{payment.amount.toFixed(2)}</p>
+                                <p className="text-2xl font-bold text-blue-600">{payment.amount.toFixed(2)}KZ</p>
                                 <p className="text-sm text-gray-600 mt-1">
                                   Vencimento: {format(new Date(payment.dueDate), 'dd MMM, yyyy', { locale: ptBR })}
                                 </p>
@@ -262,20 +263,42 @@ export function PaymentsView() {
                               <div className="space-y-3">
                                 <div>
                                   <label className="text-sm font-medium text-gray-700">Método de Pagamento</label>
-                                  <Select>
+                                  <Select value={metodoPagamento} onValueChange={setMetodoPagamento}>
                                     <SelectTrigger>
                                       <SelectValue placeholder="Selecione o método" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      <SelectItem value="card">Cartão de Crédito</SelectItem>
                                       <SelectItem value="debit">Cartão de Débito</SelectItem>
                                       <SelectItem value="transfer">Transferência Bancária</SelectItem>
-                                      <SelectItem value="mbway">MB WAY</SelectItem>
+                                      <SelectItem value="mbway">Multicaixa express</SelectItem>
                                     </SelectContent>
                                   </Select>
                                 </div>
+                                {metodoPagamento === 'multicaixa' && (
+                                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                  <h4 className="font-medium text-blue-800 mb-2">Pagamento via Multicaixa</h4>
+                                  <p className="text-sm text-blue-700 mb-3">
+                                      Use o código abaixo no seu Multicaixa Express:
+                                  </p>
+                                  <div className="bg-white p-3 rounded border text-center">
+                                    <span className="font-mono text-lg font-bold">MC- 7437834743764</span>
+                                  </div>
+                                  </div>
+                                )}
+
+                                {metodoPagamento === 'transferencia' && (
+                                  <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                                    <h4 className="font-medium text-green-800 mb-2">Dados para Transferência</h4>
+                                    <div className="space-y-2 text-sm">
+                                      <div><strong>Banco:</strong> BAI</div>
+                                      <div><strong>IBAN:</strong> AO06 0040 0000 1234 5678 1011 2</div>
+                                      <div><strong>Titular:</strong> Escola Internacional de Luanda</div>
+                                      <div><strong>Referência:</strong>273632382</div>
+                                    </div>
+                                  </div>
+                                )}
                                 <div className="flex gap-3">
-                                  <Button className="flex-1">
+                                  <Button className="flex-1 bg-green-500 hover:bg-green-600" disabled={!metodoPagamento}>
                                     Confirmar Pagamento
                                   </Button>
                                   <Button variant="outline">

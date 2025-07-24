@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useStudent } from '@/contexts/StudentContext';
-import { TrendingUp, TrendingDown, BarChart3, Target, Award, Calendar, BookOpen, Clock } from 'lucide-react';
+import { TrendingUp, TrendingDown, BarChart3, Target, Award, BookOpen, Clock } from 'lucide-react';
 
 export function PerformanceView() {
   const { subjects, grades } = useStudent();
   const [selectedPeriod, setSelectedPeriod] = useState<string>('all');
-  const [selectedSubject, setSelectedSubject] = useState<string>('all');
+
 
   // Calculate performance metrics
   const subjectPerformance = subjects.map(subject => {

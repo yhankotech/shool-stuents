@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Header } from '@/components/layout/Header';
 import { StudentProvider } from '@/contexts/StudentContext';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Dashboard } from '@/components/dashboard/Dashboard';
@@ -48,10 +49,11 @@ function App() {
 
   return (
     <StudentProvider>
-      <div className="min-h-screen bg-gray-50">
+      <div className="flex">
         <Sidebar currentPage={currentPage} onPageChange={setCurrentPage} />
-        <div className="lg:ml-64 transition-all duration-300">
-          <main className="p-6">
+        <div className="flex-1 flex flex-col overflow-hidden transition-all duration-300">
+          <Header />
+          <main className="flex-1 overflow-y-auto p-6">
             {renderCurrentPage()}
           </main>
         </div>

@@ -1,254 +1,335 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { useStudent } from '@/contexts/StudentContext';
-import { MessageSquare, Send, Search, Plus, Paperclip, User, School } from 'lucide-react';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
+import {
+  MessageCircle,
+  Send,
+  Search,
+  GraduationCap,
+  Phone,
+  Video,
+  MoreVertical
+} from 'lucide-react';
 
-export function MessagesView() {
-  const { messages, markMessageAsRead, subjects } = useStudent();
-  const [selectedMessage, setSelectedMessage] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [newMessage, setNewMessage] = useState({ to: '', subject: '', content: '' });
+interface Conversa {
+  id: string;
+  nome: string;
+  tipo: 'professor' | 'escola';
+  disciplina?: string;
+  avatar?: string;
+  ultimaMensagem: string;
+  hora: string;
+  naoLidas: number;
+  online: boolean;
+}
 
-  const filteredMessages = messages.filter(message =>
-    message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    message.sender.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    message.content.toLowerCase().includes(searchTerm.toLowerCase())
+interface Mensagem {
+  id: string;
+  remetente: string;
+  conteudo: string;
+  hora: string;
+  minha: boolean;
+}
+
+const conversas: Conversa[] = [
+  {
+    id: '1',
+    nome: 'Prof. Maria Silva',
+    tipo: 'professor',
+    disciplina: 'Matemática',
+    avatar: 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',
+    ultimaMensagem: 'O João está indo muito bem nas aulas!',
+    hora: '14:30',
+    naoLidas: 1,
+    online: true
+  },
+  {
+    id: '2',
+    nome: 'Prof. Carlos Mendes',
+    tipo: 'professor',
+    disciplina: 'Física',
+    avatar: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',
+    ultimaMensagem: 'Gostaria de conversar sobre o desempenho da Maria',
+    hora: '12:15',
+    naoLidas: 0,
+    online: false
+  },
+  {
+    id: '3',
+    nome: 'Secretaria Acadêmica',
+    tipo: 'escola',
+    ultimaMensagem: 'Documentos de matrícula disponíveis para retirada',
+    hora: '11:45',
+    naoLidas: 0,
+    online: true
+  },
+  {
+    id: '4',
+    nome: 'Prof. Isabel Costa',
+    tipo: 'professor',
+    disciplina: 'Português',
+    ultimaMensagem: 'Reunião de pais marcada para sexta-feira',
+    hora: 'Ontem',
+    naoLidas: 0,
+    online: false
+  }
+];
+
+const mensagensExemplo: Mensagem[] = [
+  {
+    id: '1',
+    remetente: 'Prof. Maria Silva',
+    conteudo: 'Boa tarde! Como está?',
+    hora: '14:25',
+    minha: false
+  },
+  {
+    id: '2',
+    remetente: 'Você',
+    conteudo: 'Boa tarde, professora! Tudo bem, obrigada. Como está o João nas aulas?',
+    hora: '14:26',
+    minha: true
+  },
+  {
+    id: '3',
+    remetente: 'Prof. Maria Silva',
+    conteudo: 'O João está indo muito bem! Ele tem mostrado grande interesse pela matemática e suas notas têm melhorado consistentemente.',
+    hora: '14:27',
+    minha: false
+  },
+  {
+    id: '4',
+    remetente: 'Você',
+    conteudo: 'Que bom saber! Em casa ele sempre fala das suas aulas com entusiasmo.',
+    hora: '14:28',
+    minha: true
+  },
+  {
+    id: '5',
+    remetente: 'Prof. Maria Silva',
+    conteudo: 'Fico muito feliz em ouvir isso! Continue incentivando-o em casa.',
+    hora: '14:30',
+    minha: false
+  }
+];
+
+export function MessagesView () {
+  const [conversaSelecionada, setConversaSelecionada] = useState<Conversa>(conversas[0]);
+  const [mensagens, setMensagens] = useState<Mensagem[]>(mensagensExemplo);
+  const [novaMensagem, setNovaMensagem] = useState('');
+  const [busca, setBusca] = useState('');
+
+  const getTipoLabel = (tipo: string, disciplina?: string) => {
+    if (tipo === 'professor') {
+      return disciplina ? `Prof. ${disciplina}` : 'Professor';
+    }
+    return 'Escola';
+  };
+
+  const enviarMensagem = () => {
+    if (!novaMensagem.trim()) return;
+
+    const mensagem: Mensagem = {
+      id: Date.now().toString(),
+      remetente: 'Você',
+      conteudo: novaMensagem,
+      hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+      minha: true
+    };
+
+    setMensagens([...mensagens, mensagem]);
+    setNovaMensagem('');
+  };
+
+  const conversasFiltradas = conversas.filter(conversa =>
+    conversa.nome.toLowerCase().includes(busca.toLowerCase()) ||
+    (conversa.disciplina && conversa.disciplina.toLowerCase().includes(busca.toLowerCase()))
   );
-
-  const getSenderIcon = (senderType: string) => {
-    switch (senderType) {
-      case 'teacher':
-        return <User className="w-4 h-4" />;
-      case 'parent':
-        return <User className="w-4 h-4" />;
-      case 'school':
-        return <School className="w-4 h-4" />;
-      default:
-        return <MessageSquare className="w-4 h-4" />;
-    }
-  };
-
-  const getSenderBadgeColor = (senderType: string) => {
-    switch (senderType) {
-      case 'teacher':
-        return 'bg-blue-100 text-blue-700';
-      case 'parent':
-        return 'bg-green-100 text-green-700';
-      case 'school':
-        return 'bg-purple-100 text-purple-700';
-      default:
-        return 'bg-gray-100 text-gray-700';
-    }
-  };
-
-  const handleMessageClick = (messageId: string) => {
-    setSelectedMessage(messageId);
-    markMessageAsRead(messageId);
-  };
-
-  const selectedMessageData = messages.find(m => m.id === selectedMessage);
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Mensagens</h1>
-          <p className="text-gray-600">Comunicação com professores e escola</p>
+          <h1 className="text-3xl font-bold flex items-center">
+            <MessageCircle className="mr-3 h-8 w-8" />
+            Mensagens
+          </h1>
+          <p className="text-muted-foreground">Comunicação direta com professores e escola</p>
         </div>
-        
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button className="flex items-center gap-2">
-              <Plus className="w-4 h-4" />
-              Nova Mensagem
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Nova Mensagem</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-gray-700">Para (Professor)</label>
-                <select 
-                  className="w-full mt-1 p-2 border border-gray-300 rounded-md"
-                  value={newMessage.to}
-                  onChange={(e) => setNewMessage({ ...newMessage, to: e.target.value })}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[700px]">
+        {/* Lista de Conversas */}
+        <Card className="lg:col-span-1">
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <MessageCircle className="mr-2 h-5 w-5" />
+              Conversas
+            </CardTitle>
+            <div className="relative">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Buscar conversas..."
+                value={busca}
+                onChange={(e) => setBusca(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          </CardHeader>
+          <CardContent className="p-0">
+            <ScrollArea className="h-[500px]">
+              {conversasFiltradas.map((conversa) => (
+                <div
+                  key={conversa.id}
+                  className={`p-4 border-b cursor-pointer hover:bg-muted/50 transition-colors ${
+                    conversaSelecionada.id === conversa.id ? 'bg-muted' : ''
+                  }`}
+                  onClick={() => setConversaSelecionada(conversa)}
                 >
-                  <option value="">Selecione um professor</option>
-                  {subjects.map(subject => (
-                    <option key={subject.id} value={subject.teacher}>
-                      {subject.teacher} - {subject.name}
-                    </option>
-                  ))}
-                </select>
+                  <div className="flex items-center space-x-3">
+                    <div className="relative">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={conversa.avatar} alt={conversa.nome} />
+                        <AvatarFallback>
+                          {conversa.tipo === 'professor' ? (
+                            <GraduationCap className="h-5 w-5" />
+                          ) : (
+                            conversa.nome.split(' ').map(n => n[0]).join('')
+                          )}
+                        </AvatarFallback>
+                      </Avatar>
+                      {conversa.online && (
+                        <div className="absolute -bottom-1 -right-1 h-3 w-3 bg-green-500 border-2 border-white rounded-full" />
+                      )}
+                    </div>
+                    
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <p className="font-medium truncate">{conversa.nome}</p>
+                        <div className="flex items-center space-x-2">
+                          {conversa.naoLidas > 0 && (
+                            <Badge variant="destructive" className="rounded-full">
+                              {conversa.naoLidas}
+                            </Badge>
+                          )}
+                          <span className="text-xs text-muted-foreground">{conversa.hora}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between mt-1">
+                        <p className="text-sm text-muted-foreground truncate">
+                          {conversa.ultimaMensagem}
+                        </p>
+                      </div>
+                      <Badge variant="outline" className="text-xs mt-1">
+                        {getTipoLabel(conversa.tipo, conversa.disciplina)}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </ScrollArea>
+          </CardContent>
+        </Card>
+
+        {/* Área de Conversa */}
+        <Card className="lg:col-span-2 flex flex-col">
+          <CardHeader className="flex-shrink-0">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="relative">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={conversaSelecionada.avatar} alt={conversaSelecionada.nome} />
+                    <AvatarFallback>
+                      {conversaSelecionada.tipo === 'professor' ? (
+                        <GraduationCap className="h-5 w-5" />
+                      ) : (
+                        conversaSelecionada.nome.split(' ').map(n => n[0]).join('')
+                      )}
+                    </AvatarFallback>
+                  </Avatar>
+                  {conversaSelecionada.online && (
+                    <div className="absolute -bottom-1 -right-1 h-3 w-3 bg-green-500 border-2 border-white rounded-full" />
+                  )}
+                </div>
+                <div>
+                  <CardTitle className="text-lg">{conversaSelecionada.nome}</CardTitle>
+                  <CardDescription className="flex items-center">
+                    <Badge variant="outline" className="text-xs mr-2">
+                      {getTipoLabel(conversaSelecionada.tipo, conversaSelecionada.disciplina)}
+                    </Badge>
+                    {conversaSelecionada.online ? (
+                      <span className="text-green-600 text-sm">Online</span>
+                    ) : (
+                      <span className="text-muted-foreground text-sm">Offline</span>
+                    )}
+                  </CardDescription>
+                </div>
               </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">Assunto</label>
-                <Input
-                  value={newMessage.subject}
-                  onChange={(e) => setNewMessage({ ...newMessage, subject: e.target.value })}
-                  placeholder="Digite o assunto da mensagem"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">Mensagem</label>
-                <Textarea
-                  value={newMessage.content}
-                  onChange={(e) => setNewMessage({ ...newMessage, content: e.target.value })}
-                  placeholder="Digite sua mensagem..."
-                  rows={6}
-                />
-              </div>
-              <div className="flex justify-end gap-3">
-                <Button variant="outline">
-                  <Paperclip className="w-4 h-4 mr-2" />
-                  Anexar
+              
+              <div className="flex space-x-2">
+                <Button variant="outline" size="sm">
+                  <Phone className="h-4 w-4" />
                 </Button>
-                <Button>
-                  <Send className="w-4 h-4 mr-2" />
-                  Enviar
+                <Button variant="outline" size="sm">
+                  <Video className="h-4 w-4" />
+                </Button>
+                <Button variant="outline" size="sm">
+                  <MoreVertical className="h-4 w-4" />
                 </Button>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
-      </div>
+          </CardHeader>
 
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-        <Input
-          placeholder="Pesquisar mensagens..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-10"
-        />
-      </div>
+          <Separator />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Messages List */}
-        <div className="lg:col-span-1 space-y-3">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Caixa de Entrada</h2>
-            <Badge variant="secondary">
-              {filteredMessages.filter(m => !m.read).length} não lidas
-            </Badge>
-          </div>
-          
-          <div className="space-y-2 max-h-96 overflow-y-auto">
-            {filteredMessages.map((message) => (
-              <Card 
-                key={message.id} 
-                className={`cursor-pointer transition-all hover:shadow-md ${
-                  selectedMessage === message.id ? 'ring-2 ring-blue-500' : ''
-                } ${!message.read ? 'bg-blue-50 border-blue-200' : ''}`}
-                onClick={() => handleMessageClick(message.id)}
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <div className={`p-1 rounded-full ${getSenderBadgeColor(message.senderType)}`}>
-                        {getSenderIcon(message.senderType)}
-                      </div>
-                      <span className="font-medium text-sm truncate">
-                        {message.sender}
-                      </span>
-                    </div>
-                    {!message.read && (
-                      <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                    )}
-                  </div>
-                  <h3 className="font-medium text-sm mb-1 truncate">
-                    {message.subject}
-                  </h3>
-                  <p className="text-xs text-gray-500 truncate mb-2">
-                    {message.content}
-                  </p>
-                  <p className="text-xs text-gray-400">
-                    {format(new Date(message.date), 'dd MMM', { locale: ptBR })}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-
-        {/* Message Detail */}
-        <div className="lg:col-span-2">
-          {selectedMessageData ? (
-            <Card className="h-fit">
-              <CardHeader className="border-b">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <CardTitle className="text-lg">{selectedMessageData.subject}</CardTitle>
-                    <div className="flex items-center gap-2 mt-2">
-                      <div className={`p-1 rounded-full ${getSenderBadgeColor(selectedMessageData.senderType)}`}>
-                        {getSenderIcon(selectedMessageData.senderType)}
-                      </div>
-                      <span className="text-sm text-gray-600">
-                        {selectedMessageData.sender}
-                      </span>
-                      <span className="text-xs text-gray-400">
-                        {format(new Date(selectedMessageData.date), 'dd MMM, yyyy às HH:mm', { locale: ptBR })}
-                      </span>
+          <CardContent className="flex-1 flex flex-col p-0">
+            <ScrollArea className="flex-1 p-4">
+              <div className="space-y-4">
+                {mensagens.map((mensagem) => (
+                  <div
+                    key={mensagem.id}
+                    className={`flex ${mensagem.minha ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div
+                      className={`max-w-[70%] p-3 rounded-lg ${
+                        mensagem.minha
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-muted'
+                      }`}
+                    >
+                      <p className="text-sm">{mensagem.conteudo}</p>
+                      <p className={`text-xs mt-1 ${
+                        mensagem.minha ? 'text-blue-100' : 'text-muted-foreground'
+                      }`}>
+                        {mensagem.hora}
+                      </p>
                     </div>
                   </div>
-                  <Badge variant={selectedMessageData.senderType === 'teacher' ? 'default' : 'secondary'}>
-                    {selectedMessageData.senderType === 'teacher' ? 'Professor' : 
-                     selectedMessageData.senderType === 'parent' ? 'Encarregado' : 'Escola'}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="prose max-w-none">
-                  <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                    {selectedMessageData.content}
-                  </p>
-                </div>
-                
-                {selectedMessageData.attachments && selectedMessageData.attachments.length > 0 && (
-                  <div className="mt-6 pt-4 border-t">
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Anexos:</h4>
-                    <div className="space-y-2">
-                      {selectedMessageData.attachments.map((attachment, index) => (
-                        <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded">
-                          <Paperclip className="w-4 h-4 text-gray-500" />
-                          <span className="text-sm text-gray-700">{attachment}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div className="mt-6 pt-4 border-t">
-                  <div className="flex gap-3">
-                    <Button variant="outline" className="flex-1">
-                      Responder
-                    </Button>
-                    <Button variant="outline">
-                      Encaminhar
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ) : (
-            <Card className="h-96 flex items-center justify-center">
-              <div className="text-center">
-                <MessageSquare className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500">Selecione uma mensagem para visualizar</p>
+                ))}
               </div>
-            </Card>
-          )}
-        </div>
+            </ScrollArea>
+
+            <div className="p-4 border-t">
+              <div className="flex space-x-2">
+                <Input
+                  placeholder="Digite sua mensagem..."
+                  value={novaMensagem}
+                  onChange={(e) => setNovaMensagem(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && enviarMensagem()}
+                  className="flex-1"
+                />
+                <Button onClick={enviarMensagem} className='bg-green-500 hover:bg-green-600'>
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
