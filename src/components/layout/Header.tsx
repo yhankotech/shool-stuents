@@ -20,7 +20,7 @@ export interface Aluno {
 
 export const aluno: Aluno = {
   id: '1',
-  nome: 'Romeina Cajamba',
+  nome: 'Romenia Cajamba',
   telefone: '+244 923 456 789',
   email: 'ana.santos@email.com',
   avatar: 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',

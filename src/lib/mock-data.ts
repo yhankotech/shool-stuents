@@ -2,8 +2,8 @@ import { Student, Grade, Subject, Message, Event, Payment, Notification, Resourc
 
 export const mockStudent: Student = {
   id: '1',
-  name: 'Ana Silva',
-  email: 'ana.silva@escola.pt',
+  name: 'Romenia',
+  email: 'romenia.cajamba@escola.pt',
   studentId: 'EST2024001',
   class: '12º A',
   year: '2024/2025',

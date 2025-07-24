@@ -31,7 +31,7 @@ export function Dashboard({ onPageChange }: DashboardProps) {
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-700 rounded-xl p-6 text-white">
+      <div className="bg-blue-600  rounded-xl p-6 text-white">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold mb-2">
