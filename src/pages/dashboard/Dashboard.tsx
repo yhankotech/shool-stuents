@@ -1,9 +1,9 @@
-import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { StatsCard } from './StatsCard';
 import { useStudent } from '@/contexts/StudentContext';
+import { useNavigate } from 'react-router-dom';
 import {
   GraduationCap,
   TrendingUp,
@@ -16,12 +16,10 @@ import {
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-interface DashboardProps {
-  onPageChange: (page: string) => void;
-}
-
-export function Dashboard({ onPageChange }: DashboardProps) {
+export function Dashboard() {
   const { student, subjects, grades, events, payments, messages } = useStudent();
+
+  const navigate = useNavigate();
 
   const averageGrade = grades.reduce((acc, grade) => acc + grade.grade, 0) / grades.length;
   const upcomingEvents = events.filter(event => new Date(event.date) > new Date()).slice(0, 3);
@@ -112,7 +110,7 @@ export function Dashboard({ onPageChange }: DashboardProps) {
             <Button 
               variant="outline" 
               className="w-full"
-              onClick={() => onPageChange('performance')}
+              onClick={() => navigate('performance')}
             >
               Ver Detalhes Completos
             </Button>
@@ -149,7 +147,7 @@ export function Dashboard({ onPageChange }: DashboardProps) {
             <Button 
               variant="outline" 
               className="w-full"
-              onClick={() => onPageChange('calendar')}
+              onClick={() => navigate('calendar')}
             >
               Ver Calendário Completo
             </Button>
@@ -191,7 +189,7 @@ export function Dashboard({ onPageChange }: DashboardProps) {
             <Button 
               variant="outline" 
               className="w-full"
-              onClick={() => onPageChange('messages')}
+              onClick={() => navigate('messages')}
             >
               Ver Todas as Mensagens
             </Button>
@@ -228,7 +226,7 @@ export function Dashboard({ onPageChange }: DashboardProps) {
                 <Button 
                   variant="outline" 
                   className="w-full"
-                  onClick={() => onPageChange('payments')}
+                  onClick={() => navigate('payments')}
                 >
                   Gerir Pagamentos
                 </Button>

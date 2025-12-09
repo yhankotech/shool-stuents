@@ -17,6 +17,7 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import { useStudent } from '@/contexts/StudentContext';
+import { useNavigate } from "react-router-dom";
 
 interface SidebarProps {
   currentPage: string;
@@ -25,21 +26,21 @@ interface SidebarProps {
 
 const menuItems = [
   { id: 'dashboard', label: 'Dashboard', icon: Home },
-  { id: 'grades', label: 'Notas', icon: GraduationCap },
+  { id: 'notas', label: 'Notas', icon: GraduationCap },
   { id: 'performance', label: 'Desempenho', icon: TrendingUp },
-  { id: 'messages', label: 'Mensagens', icon: MessageSquare, hasNotification: true },
-  { id: 'calendar', label: 'Calendário', icon: Calendar },
-  { id: 'payments', label: 'Pagamentos', icon: CreditCard },
-  { id: 'resources', label: 'Recursos', icon: BookOpen },
-  { id: 'ai-tutor', label: 'IA Tutora', icon: Bot },
-  { id: 'notifications', label: 'Notificações', icon: Bell, hasNotification: true },
-  { id: 'profile', label: 'Perfil', icon: User }
+  { id: 'chat', label: 'Mensagens', icon: MessageSquare, hasNotification: true },
+  { id: 'calendario', label: 'Calendário', icon: Calendar },
+  { id: 'pagamentos', label: 'Pagamentos', icon: CreditCard },
+  { id: 'recursos', label: 'Recursos', icon: BookOpen },
+  { id: 'assistente', label: 'IA Tutora', icon: Bot },
+  { id: 'notificacoes', label: 'Notificações', icon: Bell, hasNotification: true },
+  { id: 'perfil', label: 'Perfil', icon: User }
 ];
 
 export function Sidebar({ currentPage, onPageChange }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { student, unreadMessages, unreadNotifications } = useStudent();
-
+  const navigate = useNavigate();
   const getNotificationCount = (itemId: string) => {
     if (itemId === 'messages') return unreadMessages;
     if (itemId === 'notifications') return unreadNotifications;
@@ -58,7 +59,7 @@ export function Sidebar({ currentPage, onPageChange }: SidebarProps) {
       
       <aside className={cn(
         "fixed left-0 top-0 h-full bg-white border-r border-gray-200 transition-all duration-300 z-50",
-        isCollapsed ? "w-16" : "w-64"
+        isCollapsed ? "w-16" : "w-56"
       )}>
         <div className="flex flex-col h-full">
           {/* Header */}
@@ -101,7 +102,12 @@ export function Sidebar({ currentPage, onPageChange }: SidebarProps) {
                     isCollapsed ? "px-2" : "px-3",
                     isActive && "bg-blue-600 text-white hover:bg-blue-700 flex justify-center"
                   )}
-                  onClick={() => onPageChange(item.id)}
+                  onClick={
+                    () => {
+                      onPageChange(item.id);
+                      navigate("/" + item.id)
+                    }
+                  }
                 >
                   <Icon className={cn("w-5 h-5", isCollapsed ? "mx-auto" : "mr-3")} />
                   {!isCollapsed && <span>{item.label}</span>}
