@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useStudent } from '@/contexts/StudentContext';
-import { Bell, Search, CheckCircle, AlertTriangle, Info, Award, Calendar, GraduationCap, MessageSquare, CreditCard } from 'lucide-react';
+import { Bell, Search, CheckCircle, AlertTriangle, Info, Award, Calendar, GraduationCap, MessageSquare, CreditCard } from '../../lib/icons';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 

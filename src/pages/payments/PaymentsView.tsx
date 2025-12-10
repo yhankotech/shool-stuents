@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useStudent } from '@/contexts/StudentContext';
-import { CreditCard, Download, Search, AlertTriangle, CheckCircle, Clock, Calendar, Receipt, Coins } from 'lucide-react';
+import { CreditCard, Download, Search, AlertTriangle, CheckCircle, Clock, Calendar, Receipt, Coins } from '../../lib/icons';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
