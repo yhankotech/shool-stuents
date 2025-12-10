@@ -12,7 +12,7 @@ import {
   MessageSquare,
   BookOpen,
   CreditCard
-} from 'lucide-react';
+} from '../../lib/icons';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 

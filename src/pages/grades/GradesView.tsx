@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useStudent } from '@/contexts/StudentContext';
-import { BookOpen, TrendingUp, Award, Calendar } from 'lucide-react';
+import { BookOpen, TrendingUp, Award, Calendar } from '../../lib/icons';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 

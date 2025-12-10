@@ -14,7 +14,7 @@ import {
   Phone,
   Video,
   MoreVertical
-} from 'lucide-react';
+} from '../../lib/icons';
 
 interface Conversa {
   id: string;

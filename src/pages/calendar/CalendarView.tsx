@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useStudent } from '@/contexts/StudentContext';
-import { Calendar, Clock, MapPin, Users, BookOpen, Trophy, AlertTriangle } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, BookOpen, Trophy, AlertTriangle } from '../../lib/icons';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isToday, isSameMonth } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 

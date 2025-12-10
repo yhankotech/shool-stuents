@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useStudent } from '@/contexts/StudentContext';
-import { User, Mail, Calendar, GraduationCap, Hash, Camera, Lock, Edit, Save, X } from 'lucide-react';
+import { User, Mail, Calendar, GraduationCap, Hash, Camera, Lock, Edit, Save, X } from '../../lib/icons';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 

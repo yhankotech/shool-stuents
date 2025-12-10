@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useStudent } from '@/contexts/StudentContext';
-import { TrendingUp, TrendingDown, BarChart3, Target, Award, BookOpen, Clock } from 'lucide-react';
+import { TrendingUp, TrendingDown, BarChart3, Target, Award, BookOpen, Clock } from '../../lib/icons';
 
 export function PerformanceView() {
   const { subjects, grades } = useStudent();

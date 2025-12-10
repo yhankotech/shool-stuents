@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Mail, Phone, Lock, Eye, EyeOff, GraduationCap } from "lucide-react";
+import { Mail, Phone, Lock, Eye, EyeOff, GraduationCap } from "../lib/icons";
 import { useNavigate } from "react-router-dom";
 //import { toast } from "sonner";
 //import { emailLoginSchema, phoneLoginSchema } from "@/services/schema/auth";

@@ -15,7 +15,7 @@ import {
   Menu,
   X,
   TrendingUp,
-} from 'lucide-react';
+} from '../lib/icons';
 import { useStudent } from '@/contexts/StudentContext';
 import { useNavigate } from "react-router-dom";
 
